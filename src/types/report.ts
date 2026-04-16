@@ -1,9 +1,11 @@
 export type BiomeReport = {
-  _id: string;
+  id: string;
   regionId: string;
-  userId: string;
+  userUid: string;
   observedPokemon: string[];
   note: string;
   rating: number;
   visitedAt: string;
+  createdAt?: string;
+  updatedAt?: string;
 };

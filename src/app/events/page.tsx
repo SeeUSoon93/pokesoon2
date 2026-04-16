@@ -1,16 +1,15 @@
 import { SectionTitle } from '@/components/common/section-title';
-import { EventCalendar } from '@/components/events/event-calendar';
-import { EventList } from '@/components/events/event-list';
+import { EventsWorkspace } from '@/components/events/events-workspace';
 import { getEvents } from '@/features/events/queries';
+import { ui } from '@/lib/ui';
 
 export default async function EventsPage() {
   const events = await getEvents();
 
   return (
-    <section className="space-y-4">
-      <SectionTitle title="이벤트" subtitle="이벤트 리스트/캘린더 구조" />
-      <EventCalendar />
-      <EventList events={events} />
+    <section className={ui.section}>
+      <SectionTitle title="이벤트" subtitle="예정된 이벤트를 카드로 확인하고 상세 화면으로 이동합니다." />
+      <EventsWorkspace events={events} />
     </section>
   );
 }

@@ -1,12 +1,11 @@
 import { ReactNode } from 'react';
-import { Header } from './header';
+import { ui } from '@/lib/ui';
 import { BottomNav } from './bottom-nav';
 
 export function AppShell({ children }: { children: ReactNode }) {
   return (
-    <div className="mx-auto min-h-screen max-w-md bg-slate-50 pb-20">
-      <Header />
-      <main className="space-y-4 p-4">{children}</main>
+    <div className={ui.appShell}>
+      <main className={ui.appMain}>{children}</main>
       <BottomNav />
     </div>
   );

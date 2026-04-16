@@ -4,7 +4,7 @@
 
 이 프로젝트는 소규모 지인용으로 사용하는 비공식 포켓몬고 보조 웹앱이다.
 
-목표는 기능을 크게 벌리지 않고, 아래 4가지 핵심 메뉴만 갖춘 모바일 친화형 웹앱의 기본 구조를 먼저 만드는 것이다.
+목표는 기능을 크게 벌리지 않고, 아래 핵심 메뉴만 갖춘 모바일 친화형 웹앱의 기본 구조를 먼저 만드는 것이다.
 
 - 이벤트
 - 바이옴 지도
@@ -12,29 +12,25 @@
 - IV 계산기
 - 로그인 / 마이
 
-IV 계산기는 하단 메뉴에 포함되는 핵심 화면이다.
-
-초기 단계에서는 **디자인 완성보다 구조 정리와 화면/라우팅 뼈대 구성**을 우선한다.
+초기 단계에서는 디자인 완성보다 구조 정리, 화면/라우팅 뼈대, 이후 기능 확장이 쉬운 데이터 구조를 우선한다.
 
 ---
 
 ## 2. 기술 스택
 
-- Framework: Next.js (App Router)
+- Framework: Next.js App Router
 - Language: TypeScript
-- Styling: Tailwind CSS
+- Styling: Tailwind CSS + 재사용 UI 토큰
 - Backend: Next.js Route Handlers
-- Database: MongoDB
-- Map: MapLibre GL JS
+- Database: Cloud Firestore
 - Auth: Firebase Authentication
+- Map: MapLibre GL JS 예정
 
-이번 단계에서는 백엔드를 별도 FastAPI로 분리하지 않고, **Next.js 내부 router 기반 API 구조**로 설계한다.
+이번 단계에서는 백엔드를 별도 FastAPI로 분리하지 않고, Next.js 내부 route handler 기반 API 구조로 설계한다.
 
 ---
 
 ## 3. MVP 목표
-
-이번 작업에서는 실제 기능 완성보다 아래를 먼저 만드는 것이 목표다.
 
 1. 프로젝트 폴더 구조 생성
 2. App Router 기준 페이지 구조 생성
@@ -42,8 +38,10 @@ IV 계산기는 하단 메뉴에 포함되는 핵심 화면이다.
 4. 모바일 앱 느낌의 하단 네비게이션 구조 생성
 5. 각 화면의 기본 뼈대 컴포넌트 생성
 6. API route 기본 폴더 구조 생성
-7. MongoDB 연결용 기본 유틸 파일 생성
-8. 추후 확장 가능한 컴포넌트/도메인 분리 구조 마련
+7. Cloud Firestore 연결용 기본 유틸 파일 생성
+8. Firebase Authentication 연동을 위한 기본 설정 파일과 인증 상태 관리 구조 생성
+9. 추후 확장 가능한 컴포넌트/도메인 분리 구조 마련
+10. 넓은 화면에서 카드 패널을 드래그/크기 조절할 수 있는 대시보드 구조 마련
 
 ---
 
@@ -58,7 +56,7 @@ IV 계산기는 하단 메뉴에 포함되는 핵심 화면이다.
 ### 4.2 바이옴 지도
 
 - 지도 화면
-- 지도 클릭 시 지역 상세 바텀시트 또는 패널
+- 지도 클릭 시 지역 상세 바텀시트 또는 우측 패널
 - 예상 포켓몬 리스트 표시 영역
 - 후기 목록 표시 영역
 - Firebase 로그인 사용자만 후기 작성 가능
@@ -74,14 +72,14 @@ IV 계산기는 하단 메뉴에 포함되는 핵심 화면이다.
 ### 4.4 IV 계산기
 
 - 별도 페이지 제공
-- 입력 필드와 결과 카드 구조만 우선 생성
+- 입력 필드와 결과 카드 구조 우선 생성
 
 ### 4.5 로그인 / 마이
 
 - 로그인 화면
 - 로그인 상태 확인
 - 로그인 사용자 정보 표시
-- 내가 작성한 후기 목록을 나중에 확장 가능하도록 구조만 준비
+- 내가 작성한 후기 목록을 나중에 확장 가능하도록 구조 준비
 
 ---
 
@@ -105,8 +103,6 @@ IV 계산기는 하단 메뉴에 포함되는 핵심 화면이다.
 
 ## 6. 라우팅 구조
 
-다음과 같은 App Router 구조를 기준으로 한다.
-
 - `/` : 홈
 - `/events` : 이벤트 목록
 - `/events/[id]` : 이벤트 상세
@@ -115,7 +111,7 @@ IV 계산기는 하단 메뉴에 포함되는 핵심 화면이다.
 - `/login` : 로그인
 - `/me` : 마이페이지
 
-API Route 예시:
+API Route:
 
 - `/api/events`
 - `/api/events/[id]`
@@ -124,6 +120,7 @@ API Route 예시:
 - `/api/reports`
 - `/api/reports/[id]`
 - `/api/iv`
+- `/api/users/me`
 
 ---
 
@@ -134,8 +131,9 @@ API Route 예시:
 - 모바일 우선
 - 전통적인 게시판형 UI보다 앱 같은 구조
 - 카드 기반 대시보드
-- 큰 화면에서는 카드 그리드 확장
+- 큰 화면에서는 카드 그리드가 단순 세로 정렬에 머물지 않고 드래그/크기 조절 가능한 패널로 확장
 - 하단 네비게이션 중심 구조
+- 그림자, 라운드, 표면, 버튼 등 반복 스타일은 UI 토큰으로 분리해 재사용
 
 ### 하단 네비게이션
 
@@ -144,14 +142,10 @@ API Route 예시:
 - 이벤트
 - 바이옴 지도
 - 홈
+- IV
 - 로그인 또는 마이
 
 로그인 여부에 따라 마지막 탭의 라벨과 화면 진입 경로가 달라질 수 있다.
-
-예:
-
-- 비로그인: 로그인
-- 로그인: 마이
 
 ### 지도 화면 UX
 
@@ -167,12 +161,11 @@ API Route 예시:
 
 ## 8. 데이터 모델 초안
 
-MongoDB 컬렉션 초안은 아래와 같다.
+Cloud Firestore 컬렉션 초안은 아래와 같다.
 
 ### users
 
-- `_id`
-- `firebaseUid`
+- `uid` (Firebase Auth uid, document id로 사용)
 - `email`
 - `name`
 - `image`
@@ -182,7 +175,7 @@ MongoDB 컬렉션 초안은 아래와 같다.
 
 ### events
 
-- `_id`
+- `id` (document id)
 - `title`
 - `slug`
 - `description`
@@ -194,7 +187,7 @@ MongoDB 컬렉션 초안은 아래와 같다.
 
 ### biome_regions
 
-- `_id`
+- `id` (document id)
 - `name`
 - `center`
 - `geometry`
@@ -206,9 +199,9 @@ MongoDB 컬렉션 초안은 아래와 같다.
 
 ### biome_reports
 
-- `_id`
+- `id` (document id)
 - `regionId`
-- `userId`
+- `userUid`
 - `visitedAt`
 - `observedPokemon`
 - `note`
@@ -218,14 +211,11 @@ MongoDB 컬렉션 초안은 아래와 같다.
 
 ### iv_calculations
 
-초기에는 DB 저장 없이 클라이언트 계산만 우선 고려한다.
-필요 시 추후 저장 기능 추가.
+초기에는 DB 저장 없이 클라이언트 계산만 우선 고려한다. 필요 시 추후 저장 기능을 추가한다.
 
 ---
 
 ## 9. 디렉토리 구조 요구사항
-
-Codex는 아래와 같은 구조를 먼저 생성해야 한다.
 
 ```txt
 src/
@@ -271,7 +261,6 @@ src/
     layout/
       app-shell.tsx
       bottom-nav.tsx
-      header.tsx
 
     home/
       dashboard.tsx
@@ -279,18 +268,21 @@ src/
       quick-links.tsx
 
     events/
+      events-workspace.tsx
       event-list.tsx
       event-card.tsx
       event-calendar.tsx
 
     map/
       biome-map.tsx
+      map-workspace.tsx
       biome-bottom-sheet.tsx
       biome-region-card.tsx
       report-list.tsx
       report-form.tsx
 
     iv/
+      iv-workspace.tsx
       iv-calculator-form.tsx
       iv-result-card.tsx
 
@@ -298,14 +290,20 @@ src/
       login-form.tsx
       auth-guard.tsx
 
+    me/
+      me-workspace.tsx
+
     common/
+      adaptive-board.tsx
       card.tsx
       button.tsx
       empty-state.tsx
       section-title.tsx
 
   lib/
-    mongodb.ts
+    firestore.ts
+    demo-data.ts
+    ui.ts
     utils.ts
     constants.ts
     auth.ts
@@ -325,6 +323,7 @@ src/
     events/
       queries.ts
       mapper.ts
+      presenter.ts
 
     biomes/
       queries.ts
@@ -344,6 +343,9 @@ src/
 
   providers/
     auth-provider.tsx
+
+scripts/
+  seed-firestore.mjs
 ```
 
 ---
@@ -355,14 +357,15 @@ src/
 - 각 페이지는 최소한의 제목, 설명, placeholder UI를 포함한다.
 - 공통 컴포넌트는 재사용 가능한 단위로 만든다.
 - 타입 정의를 먼저 분리한다.
-- API route는 실제 DB 연결이 없더라도 기본 응답 구조를 갖춘다.
+- API route는 Firestore 설정이 없으면 더미 JSON을 반환한다.
 - 후기 작성은 로그인 체크가 들어갈 수 있도록 컴포넌트 구조를 분리한다.
+- 후기 수정/삭제는 작성자 본인 또는 관리자가 처리할 수 있도록 구조를 연다.
+- UI 토큰은 `src/lib/ui.ts`와 `globals.css` CSS 변수로 관리한다.
+- 보드 레이아웃은 페이지별 `localStorage`에 저장될 수 있도록 설계한다.
 
 ---
 
 ## 11. 이번 단계에서 하지 않을 것
-
-이번 프로젝트 구조 생성 단계에서는 아래 항목은 구현하지 않는다.
 
 - 자유게시판
 - 광고 시스템
@@ -372,36 +375,32 @@ src/
 - 이미지 업로드
 - 정교한 지도 데이터 수집 파이프라인
 - 완전한 인증 시스템 구현
-- 단, Firebase Authentication 연동을 위한 구조와 기본 설정 파일은 포함한다.
 - 실제 포켓몬고 공식 데이터 연동
 
 ---
 
 ## 12. Codex 작업 지시
 
-Codex는 아래 작업만 우선 수행한다.
-
 1. Next.js App Router 프로젝트 기준으로 폴더 구조를 생성한다.
 2. 위 명세에 맞는 기본 파일을 만든다.
 3. 각 페이지에 최소 동작 가능한 placeholder 화면을 만든다.
 4. 하단 네비게이션이 포함된 공통 레이아웃을 만든다.
-5. MongoDB 연결용 `lib/mongodb.ts` 파일을 만든다.
+5. Cloud Firestore 연결용 `lib/firestore.ts` 파일을 만든다.
 6. Firebase Authentication 연동을 위한 기본 설정 파일과 인증 상태 관리 구조를 만든다.
 7. 타입 파일과 더미 데이터용 기본 타입 구조를 만든다.
-8. API Route 파일은 더미 JSON을 반환하도록 만든다.
-9. 지도/이벤트/IV/로그인 화면은 일단 skeleton 수준으로만 만든다.
+8. API Route 파일은 Firestore 또는 더미 JSON을 반환하도록 만든다.
+9. 지도/이벤트/IV/로그인 화면은 skeleton 수준에서 시작하되 실제 화면 윤곽이 보이게 만든다.
 10. 코드 스타일은 유지보수하기 쉽게 모듈 단위로 분리한다.
-11. 우선 목표는 기능 완성이 아니라 **확장 가능한 프로젝트 구조 초기화**다.
+11. 우선 목표는 기능 완성이 아니라 확장 가능한 프로젝트 구조 초기화다.
 
 ---
 
 ## 13. 기대 결과
 
-이 단계가 끝나면 아래 상태여야 한다.
-
 - 프로젝트를 실행하면 기본 라우팅이 동작한다.
-- 홈 / 이벤트 / 지도 / IV / 로그인(또는 마이) 화면 이동이 된다.
+- 홈 / 이벤트 / 지도 / IV / 로그인 또는 마이 화면 이동이 된다.
 - 하단 네비게이션이 보인다.
 - 각 페이지에 임시 카드/섹션 UI가 보인다.
-- API route가 기본 JSON 응답을 반환한다.
+- 넓은 화면에서는 카드 패널을 드래그하고 크기 조절할 수 있다.
+- API route가 Firestore 또는 더미 JSON을 반환한다.
 - 이후 실제 기능 구현을 바로 이어서 붙일 수 있는 구조가 준비된다.

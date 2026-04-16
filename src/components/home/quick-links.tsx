@@ -1,18 +1,22 @@
 import Link from 'next/link';
-import { Card } from '@/components/common/card';
+import { ui } from '@/lib/ui';
+
+const links = [
+  { href: '/map', label: '지도 보기', description: '바이옴과 후기 확인' },
+  { href: '/iv', label: 'IV 계산기', description: '개체값 빠른 계산' },
+  { href: '/events', label: '이벤트', description: '다가오는 일정' },
+  { href: '/login', label: '로그인', description: '후기 작성 준비' },
+];
 
 export function QuickLinks() {
   return (
-    <Card>
-      <h3 className="mb-2 text-sm font-semibold">바로가기</h3>
-      <div className="grid grid-cols-2 gap-2 text-sm">
-        <Link href="/map" className="rounded-lg bg-slate-100 px-3 py-2">
-          지도 보기
+    <div className="card-stack">
+      {links.map((link) => (
+        <Link key={link.href} href={link.href} className={ui.stat}>
+          <strong>{link.label}</strong>
+          <span className="muted-copy">{link.description}</span>
         </Link>
-        <Link href="/iv" className="rounded-lg bg-slate-100 px-3 py-2">
-          IV 계산기
-        </Link>
-      </div>
-    </Card>
+      ))}
+    </div>
   );
 }

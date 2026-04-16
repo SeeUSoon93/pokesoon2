@@ -1,14 +1,16 @@
-import { Card } from '@/components/common/card';
+import { Button } from '@/components/common/button';
+import { ui } from '@/lib/ui';
 
 export function IvCalculatorForm() {
   return (
-    <Card>
-      <p className="mb-2 font-semibold">IV 입력</p>
-      <div className="grid grid-cols-3 gap-2 text-sm">
-        <input className="rounded border p-2" placeholder="CP" />
-        <input className="rounded border p-2" placeholder="HP" />
-        <input className="rounded border p-2" placeholder="Lv" />
+    <form className="card-stack">
+      <p className="muted-copy">정교한 계산식은 다음 단계에서 붙이고, 지금은 입력 구조를 잡아둡니다.</p>
+      <div className="form-grid">
+        <input className={ui.input} placeholder="CP" inputMode="numeric" />
+        <input className={ui.input} placeholder="HP" inputMode="numeric" />
+        <input className={ui.input} placeholder="Lv" inputMode="decimal" />
       </div>
-    </Card>
+      <Button type="button">계산하기</Button>
+    </form>
   );
 }

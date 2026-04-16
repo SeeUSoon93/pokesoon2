@@ -1,8 +1,11 @@
 export type AppUser = {
-  _id: string;
-  firebaseUid: string;
-  email: string;
-  name: string;
-  image?: string;
+  id?: string;
+  uid: string;
+  email: string | null;
+  name: string | null;
+  image?: string | null;
   provider: string;
+  isAdmin?: boolean;
+  createdAt?: string;
+  updatedAt?: string;
 };

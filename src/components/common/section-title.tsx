@@ -1,8 +1,10 @@
+import { ui } from '@/lib/ui';
+
 export function SectionTitle({ title, subtitle }: { title: string; subtitle?: string }) {
   return (
-    <div className="mb-3">
-      <h2 className="text-lg font-bold text-slate-900">{title}</h2>
-      {subtitle ? <p className="text-sm text-slate-500">{subtitle}</p> : null}
+    <div className={ui.sectionTitle}>
+      <h2>{title}</h2>
+      {subtitle ? <p className={ui.sectionSubtitle}>{subtitle}</p> : null}
     </div>
   );
 }

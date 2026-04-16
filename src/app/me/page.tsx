@@ -1,14 +1,12 @@
-import { Card } from '@/components/common/card';
+import { MeWorkspace } from '@/components/me/me-workspace';
 import { SectionTitle } from '@/components/common/section-title';
+import { ui } from '@/lib/ui';
 
 export default function MePage() {
   return (
-    <section className="space-y-3">
-      <SectionTitle title="마이페이지" subtitle="내 정보/내 후기 확장 구조" />
-      <Card>
-        <p className="font-semibold">사용자 정보 placeholder</p>
-        <p className="text-sm text-slate-600">로그인 상태 기반으로 추후 확장</p>
-      </Card>
+    <section className={ui.section}>
+      <SectionTitle title="마이페이지" subtitle="내 정보와 내가 작성한 후기를 Firestore 문서 기준으로 확장합니다." />
+      <MeWorkspace />
     </section>
   );
 }

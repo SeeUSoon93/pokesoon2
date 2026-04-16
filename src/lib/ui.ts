@@ -1,0 +1,16 @@
+export const ui = {
+  appShell: 'app-shell',
+  appMain: 'app-main',
+  card: 'ui-card',
+  cardMuted: 'ui-card ui-card--muted',
+  cardInteractive: 'ui-card ui-card--interactive',
+  button: 'ui-button',
+  buttonSecondary: 'ui-button ui-button--secondary',
+  input: 'ui-input',
+  badge: 'ui-badge',
+  badgeWarm: 'ui-badge ui-badge--warm',
+  section: 'screen-section',
+  sectionTitle: 'section-title',
+  sectionSubtitle: 'section-subtitle',
+  stat: 'ui-stat',
+} as const;
